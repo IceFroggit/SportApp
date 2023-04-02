@@ -5,16 +5,18 @@ plugins {
 
 android {
     namespace 'com.example.sportapp'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.example.sportapp"
-        minSdk 29
-        targetSdk 32
+        minSdk 21
+        targetSdk 33
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    sourceSets{
+        main.java.srcDirs += 'src/main/kotlin'
     }
 
     buildTypes {
