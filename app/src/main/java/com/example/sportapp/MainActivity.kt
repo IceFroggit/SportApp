@@ -1,14 +1,19 @@
 package com.example.sportapp
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.sportapp.databinding.ActivityMainBinding
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
@@ -23,7 +28,6 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this,ErrorActivity::class.java)
             startActivity(intent)
         }
-
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         parseBundle(savedInstanceState)
 
@@ -42,6 +46,7 @@ class MainActivity : AppCompatActivity() {
 
             }
             updateQuestion()
+            fireBaseDoSomething()
 
         }
     }
@@ -94,6 +99,30 @@ class MainActivity : AppCompatActivity() {
                 return false
             }
         }
+    }
+    private fun fireBaseDoSomething(){
+        val remoteConfig = Firebase.remoteConfig
+        val configSettings = remoteConfigSettings {
+            minimumFetchIntervalInSeconds = 3600
+        }
+        remoteConfig.setConfigSettingsAsync(configSettings)
+
+        remoteConfig.setDefaultsAsync(R.xml.key_default_values)
+
+        remoteConfig.fetchAndActivate()
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val updated = task.result
+                    Log.d(TAG, "Config params updated: $updated")
+                    Toast.makeText(this, "Fetch and activate succeeded",
+                        Toast.LENGTH_SHORT).show()
+                    val text = remoteConfig.getString("KEY_LINK")
+                   // binding.trueButton.text = text
+                } else {
+                    Toast.makeText(this, "Fetch failed",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
     companion object {
