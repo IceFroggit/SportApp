@@ -8,10 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.webkit.CookieManager
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -21,7 +18,9 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import java.util.*
-    
+
+
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
     private lateinit var binding: ActivityMainBinding
@@ -35,7 +34,6 @@ class MainActivity : AppCompatActivity() {
         if (mSettings?.contains(LINK_KEY) == true) {
             link = mSettings.getString(LINK_KEY, "").toString()
         }
-        //todo СДЕЛАТЬ ЧТОБЫ ПРИ СМЕНЕ ОРИЕНТАЦИИ САЙТ НЕ ПЕРЕЗАГРУЖАЛСЯ
         binding = ActivityMainBinding.inflate(layoutInflater)
         webBinding = WebviewLayoutBinding.inflate(layoutInflater)
         webView = webBinding.webView
@@ -44,19 +42,23 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ErrorActivity::class.java)
             startActivity(intent)
         }
-        //todo refactor later
         if (link != EMPTY_LINK) {
             if (isDeviceOnline(this))
                 SetupWebView(savedInstanceState, link)
         } else {
-            fetchRemoteConfig(savedInstanceState)
+            try {
+                fetchRemoteConfig(savedInstanceState)
+            } catch (e:Exception) {
+                val intent = Intent(this, ErrorActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 
     private fun updateQuestion() {
         val questionTextResId = viewModel.currentQuestionText
         binding.questionTextView.setText(questionTextResId)
-        if(viewModel.currentIndex == 15){
+        if (viewModel.currentIndex == 15) {
             binding.trueButton.isEnabled = false
             binding.falseButton.isEnabled = false
             binding.trueButton.visibility = View.INVISIBLE
@@ -79,8 +81,6 @@ class MainActivity : AppCompatActivity() {
         viewModel.currentIndex = currentIndex
         val currentPoint = savedInstanceState?.getInt(KEY_INDEX, 0) ?: 0
         viewModel.currentIndex = currentPoint
-
-        //todo maybe do refactor
         binding.score.text = "High Score: ${viewModel.getScore()}%"
     }
 
@@ -109,12 +109,11 @@ class MainActivity : AppCompatActivity() {
     private fun fetchRemoteConfig(savedInstanceState: Bundle?): String {
         val remoteConfig = Firebase.remoteConfig
         val configSettings = remoteConfigSettings {
-            minimumFetchIntervalInSeconds = 200
+            minimumFetchIntervalInSeconds = 60
         }
         var fetchedLink = ""
         remoteConfig.setConfigSettingsAsync(configSettings)
         remoteConfig.setDefaultsAsync(R.xml.key_default_values)
-        //todo trycatch
         remoteConfig.fetchAndActivate()
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
@@ -123,8 +122,7 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Fetch and activate succeeded",
                         Toast.LENGTH_SHORT).show()
                     fetchedLink = remoteConfig.getString("KEY_LINK")
-                    //todo true replace with checkIsEmu
-                    if (fetchedLink == EMPTY_LINK || true) {
+                    if (fetchedLink == EMPTY_LINK || checkIsEmu()) {
                         parseBundle(savedInstanceState)
                         setupQuiz()
                     } else {
@@ -140,6 +138,8 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(this, "Fetch failed",
                         Toast.LENGTH_SHORT).show()
+                    parseBundle(savedInstanceState)
+                    setupQuiz()
                 }
             }
         return fetchedLink
@@ -151,15 +151,14 @@ class MainActivity : AppCompatActivity() {
         webView.webViewClient = WebViewClient()
         val webSettings = webView.settings
         webSettings.javaScriptEnabled = true
-        if (savedInstanceState != null)
-            webView.restoreState(savedInstanceState)
-        else
-            webView.loadUrl(urlLink)
         webView.settings.domStorageEnabled = true
         webView.settings.javaScriptCanOpenWindowsAutomatically = true
         val cookieManager = CookieManager.getInstance()
         cookieManager.setAcceptCookie(true)
-        //todo maybe неправильно
+        cookieManager.acceptCookie()
+        CookieManager.setAcceptFileSchemeCookies(true)
+        CookieManager.getInstance().setAcceptCookie(true)
+        cookieManager.getCookie(urlLink)
         val mWebSettings = webBinding.webView.settings
         mWebSettings.javaScriptEnabled = true
         mWebSettings.loadWithOverviewMode = true
@@ -173,13 +172,13 @@ class MainActivity : AppCompatActivity() {
         mWebSettings.useWideViewPort = true
         //Сохранение кэша
         webView.settings.cacheMode = WebSettings.LOAD_DEFAULT
-
-
-
+        if (savedInstanceState != null)
+            webView.restoreState(savedInstanceState)
+        else
+            webView.loadUrl(urlLink)
     }
 
     private fun checkIsEmu(): Boolean {
-       //todo вернуть на место
         if (BuildConfig.DEBUG)
             return false
         val phoneModel = Build.MODEL
@@ -239,13 +238,11 @@ class MainActivity : AppCompatActivity() {
         if (webView.canGoBack()) {
             webView.goBack()
         } else {
-
         }
     }
 
 
     companion object {
-        const val APP_PREFERENCES = "settings"
         const val KEY_INDEX = "index"
         const val KEY_POINT = "point"
         const val LINK_KEY = "link"

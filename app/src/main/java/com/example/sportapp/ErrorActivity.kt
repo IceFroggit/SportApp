@@ -12,7 +12,6 @@ import com.example.sportapp.databinding.ActivityErrorBinding
 class ErrorActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityErrorBinding
-    //todo заблокировать кнопку назад
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()
@@ -29,9 +28,7 @@ class ErrorActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
-
-    }
+    override fun onBackPressed() {}
 
     private fun isDeviceOnline(context: Context): Boolean {
         val connManager = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
