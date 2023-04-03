@@ -7,12 +7,21 @@ class MainViewModel:ViewModel() {
     var textScore = 0
     var currentIndex = 0
     private val questionBank = listOf(
-        Question(R.string.question_australia,true),
-        Question(R.string.question_oceans,true),
-        Question(R.string.question_mideast,false),
-        Question(R.string.question_africa,false),
-        Question(R.string.question_americas,true),
-        Question(R.string.question_asia,true),
+        Question(R.string.question_1,true),
+        Question(R.string.question_2,false),
+        Question(R.string.question_3,false),
+        Question(R.string.question_4,true),
+        Question(R.string.question_5,true),
+        Question(R.string.question_6,true),
+        Question(R.string.question_7,false),
+        Question(R.string.question_8,true),
+        Question(R.string.question_9,false),
+        Question(R.string.question_10,false),
+        Question(R.string.question_11,false),
+        Question(R.string.question_12,false),
+        Question(R.string.question_13,true),
+        Question(R.string.question_14,true),
+        Question(R.string.question_15,true),
         Question(R.string.ending,true))
     val currentQuestionAnswer:Boolean
         get() = questionBank[currentIndex].answer

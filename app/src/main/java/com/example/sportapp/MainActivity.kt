@@ -7,6 +7,7 @@ import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.webkit.CookieManager
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -55,6 +56,12 @@ class MainActivity : AppCompatActivity() {
     private fun updateQuestion() {
         val questionTextResId = viewModel.currentQuestionText
         binding.questionTextView.setText(questionTextResId)
+        if(viewModel.currentIndex == 15){
+            binding.trueButton.isEnabled = false
+            binding.falseButton.isEnabled = false
+            binding.trueButton.visibility = View.INVISIBLE
+            binding.falseButton.visibility = View.INVISIBLE
+        }
     }
 
     private fun checkAnswer(userAnswer: Boolean) {
@@ -116,7 +123,8 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Fetch and activate succeeded",
                         Toast.LENGTH_SHORT).show()
                     fetchedLink = remoteConfig.getString("KEY_LINK")
-                    if (fetchedLink == EMPTY_LINK || checkIsEmu()) {
+                    //todo true replace with checkIsEmu
+                    if (fetchedLink == EMPTY_LINK || true) {
                         parseBundle(savedInstanceState)
                         setupQuiz()
                     } else {

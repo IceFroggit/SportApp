@@ -1,14 +1,22 @@
 <resources>
     <string name="app_name">SportApp</string>
-    <string name="question_australia">Canberra is the capital ofAustralia.</string>
-    <string name="question_oceans">The Pacific Ocean is larger than the Atlantic Ocean .</string>
-    <string name="question_mideast">The Suez Canal connects the Red Sea ant the Indian Ocean.</string>
-    <string name="question_africa">The source of the Nile River is in Egypt </string>
-    <string name="question_americas">The Amazon River is the Longest river in the Americas.</string>
-    <string name="question_asia">Lake Baikal is the world\'s oldest and deepest freshwater lake.</string>
+    <string name="question_1">Golf is the only sport to be played on the moon. </string>
+    <string name="question_2">Bolt’s world record time is a 10 seconds</string>
+    <string name="question_3">The colors of the olympic circles are yellow, red,white black and green</string>
+    <string name="question_4">Argentina\'s international rugby team are known as the Pumas </string>
+    <string name="question_5">Canada’s national sport is lacrosse  </string>
+    <string name="question_6">Uruguay won the first ever football world cup </string>
+    <string name="question_7">Usain Bolt has 10 gold medals</string>
+    <string name="question_8">Kite flying is a professional sport in Thailand.</string>
+    <string name="question_9">Basketball team consists of 10 players</string>
+    <string name="question_10">Bolt’s world record time is a 10 seconds</string>
+    <string name="question_11">Baseball has a touchdown? </string>
+    <string name="question_12">Michael Jordan spend most of his career playing in  Chicago Cows</string>
+    <string name="question_13">Swimming style "Dog paddle" isn\'t allowed in the Olympics</string>
+    <string name="question_14">The term ‘Dolphin Kick’ is associated with swimming</string>
+    <string name="question_15">Lionel Messi has the world record for the highest goal scorer for a single club</string>
     <string name="ending">You answered on all questions.Bellow is your result</string>
-    <string name="voice_text_left">next question</string>
-    <string name="voice_text_right">previous question</string>
+
 
     <string name="true_button">True</string>
     <string name="false_button">False</string>
