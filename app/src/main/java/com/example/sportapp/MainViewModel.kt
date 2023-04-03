@@ -25,11 +25,4 @@ class MainViewModel:ViewModel() {
         currentIndex = (currentIndex + 1) % questionBank.size
     }
 
-    fun updateQuestions() {
-        TODO("Not yet implemented")
-    }
-
-    fun checkAnswer(b: Boolean) {
-        TODO("Not yet implemented")
-    }
 }
